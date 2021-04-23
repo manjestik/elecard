@@ -1,0 +1,46 @@
+<h5>Выбрать категорию товаров:</h5>
+{% for category in categories %}
+    <a class="mx-3" href="{{ path('categories', {'id': category.id}) }}">{{ category.name }}</a>
+{% endfor %}
+
+{% if productAttributes is defined %}
+    <div>
+        <h4>Выбрать по свойствам</h4>
+        <form action="" method="get" class="needs-validation" novalidate="">
+            {% for attribute in productAttributes %}
+                {% if attribute.type == 'integer' %}
+                    <div class="mb-3 input-group">
+                        <label for="integer-input">{{ attribute.name }}</label>
+                        <div class="input-group">
+                            <input class="form-control" id="integer-input"
+                                   placeholder="Минимальное значение для поиска"
+                                   name="{{ attribute.id }}[integer][min]">
+                            <input class="form-control" id="integer-input"
+                                   placeholder="Максимальное значение для поиска"
+                                   name="{{ attribute.id }}[integer][max]">
+                        </div>
+                    </div>
+                {% endif %}
+                {% if attribute.type == 'varchar' %}
+                    <div>
+                        <label for="varchar-input">{{ attribute.name }}</label>
+                        <input class="form-control" id="varchar-input" placeholder="Значение" name="{{ attribute.id }}[varchar]">
+                    </div>
+                {% endif %}
+                {% if attribute.type == 'choice' %}
+                    <div class="custom-control custom-checkbox">
+                        <p class="m-0">{{ attribute.name }}</p>
+                        <label for="choice-select"></label>
+                        <select id="choice-select" multiple="multiple" name="{{ attribute.id }}[choice][]">
+                            <option value=""></option>
+                            {% for atr in attribute.value %}
+                                <option value="{{ atr }}">{{ atr }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <button class="btn btn-primary btn-lg btn-block my-3" type="submit">Найти</button>
+        </form>
+    </div>
+{% endif %}

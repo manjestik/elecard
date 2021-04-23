@@ -1,0 +1,54 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h4>Наши новинки:</h4>
+    <ul>
+        {% for product in products %}
+            <li>
+                <p class="m-0"><b>{{ product.name }}</b> <small>({{ product.group_id }})</small></p>
+                <small class="text-muted">
+                    {% set limsv = 5 %}
+                    {% for atr in product.atr %}
+                        {% if loop.index < limsv %}
+                            {% if atr.atr_value is iterable %}
+                                {{ atr.atr_name }} - {% for atr in atr.atr_value %} {{ atr }} {% endfor %}
+                            {% else %}
+                                {{ atr.atr_name }} - {{ atr.atr_value }}
+                            {% endif %}
+                        {% endif %}
+                        {% if loop.index == limsv %}
+                            ...
+                        {% endif %}
+                        <span class="mx-3">&nbsp;</span>
+                    {% endfor %}
+                </small>
+
+                <p>{{ product.description }}</p>
+
+            </li>
+        {% else %}
+            На данный момент товары отсутвсуют.
+        {% endfor %}
+    </ul>
+    <nav>
+        <ul class="pagination">
+            {% for page in pages %}
+                {% if app.request.get('page') == null %}
+
+                {% else %}
+                    {% if app.request.get('page') == page %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="{{ path('homePage', {'page':page}) }}">{{ page }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('homePage', {'page':page}) }}">{{ page }}</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+
+    {# {% if app.request.get('page') == 0 %} #}
+{% endblock %}
