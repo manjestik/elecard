@@ -21,8 +21,8 @@ class ProductsController extends BaseController
         $sql = "SELECT p.id, p.name, p.description, CONCAT(c.name) AS group_id, CONCAT(a.name) AS atr_name, CONCAT(av.value) AS atr_value
                 FROM products AS p
                 JOIN category AS c ON p.id_category = c.id
-                JOIN attributes AS a ON p.id_category = a.id_category OR a.id_category IS NULL 
-                JOIN attributes_value AS av ON p.id_category = av.id_category AND a.id = av.id_attribute AND p.id = av.id_product
+                JOIN attributes AS a
+                JOIN attributes_value AS av ON a.id = av.id_attribute AND p.id = av.id_product
                 ORDER BY p.id DESC
                 LIMIT {$this->parameters['productOnePage']} OFFSET $offset
                 ";

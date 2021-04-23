@@ -31,11 +31,13 @@ class CategoriesController extends BaseController
                     ORDER BY p.id DESC
                     LIMIT {$this->parameters['productOnePage']} OFFSET $offset";
         } else {
-            $sql = "SELECT p.id, p.name, p.description, CONCAT(c.name) AS group_id, CONCAT(a.name) AS atr_name, CONCAT(av.value) AS atr_value
+            $sql = "SELECT p.id, p.name, p.description, c.name AS group_id, a.name AS atr_name, av.value AS atr_value
                 FROM products AS p
-                JOIN category AS c ON $id = c.id
-                JOIN attributes AS a ON $id = a.id_category OR a.id_category IS NULL 
-                JOIN attributes_value AS av ON $id = av.id_category AND a.id = av.id_attribute AND p.id = av.id_product
+                JOIN category AS c
+                JOIN attributes AS a
+                JOIN attributes_value AS av ON a.id = av.id_attribute AND p.id = av.id_product
+                WHERE p.id_category = $id
+                GROUP BY p.id
                 ORDER BY p.id DESC
                 LIMIT {$this->parameters['productOnePage']} OFFSET $offset
                 ";
@@ -123,10 +125,11 @@ class CategoriesController extends BaseController
      */
     private function getCategoryAttributes(int $categoryId): ?array
     {
-        $sql = "SELECT a.name, a.id, a.id_category, a.type, av.value AS value
+        $sql = "SELECT a.name, a.id, a.type, av.value AS value
                 FROM attributes AS a 
-                JOIN attributes_value AS av ON $categoryId = av.id_category AND a.id = av.id_attribute 
-                WHERE a.id_category = $categoryId OR a.id_category IS NULL
+                JOIN products AS p ON p.id_category = $categoryId
+                JOIN attributes_value AS av ON a.id = av.id_attribute
+                GROUP BY a.id
                 ";
         /** @var Attributes[] $attributes */
         $attributes = $this->mysql->select($sql, Attributes::class);

@@ -88,22 +88,16 @@ class DataBase
                     id INT NOT NULL AUTO_INCREMENT, 
                     name VARCHAR(255) NOT NULL, 
                     type VARCHAR(255) NOT NULL, 
-                    id_category INT,
-                    PRIMARY KEY (id),
-                    INDEX id_cat (id_category),
-                    FOREIGN KEY (id_category) REFERENCES category(id) ON DELETE CASCADE
+                    PRIMARY KEY (id)
                 )";
         $this->mysqli->query($sql);
 
         $sql = "CREATE TABLE attributes_value (
                     id INT NOT NULL AUTO_INCREMENT, 
                     value VARCHAR(255) NOT NULL, 
-                    id_category INT,
                     id_attribute INT,
                     id_product INT,
                     PRIMARY KEY (id),
-                    INDEX id_cat (id_category),
-                    FOREIGN KEY (id_category) REFERENCES category(id) ON DELETE CASCADE,
                     INDEX id_atr (id_attribute),
                     FOREIGN KEY (id_attribute) REFERENCES attributes(id) ON DELETE CASCADE,
                     INDEX id_prod (id_product),
